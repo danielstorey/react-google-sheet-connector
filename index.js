@@ -137,7 +137,7 @@ var GoogleRoute = function(props) {
 var GoogleSheet = function(props) {
     var sheetData = new SheetData(props.sheetName);
     if (props.filter) sheetData.filter(props.filter);
-    return React.createElement(props.child, {data: sheetData});
+    return React.createElement(props.child, {data: sheetData.currentData});
 };
 
 var GoogleTable = function(props) {
