@@ -1,6 +1,7 @@
 var React = require("react");
 var fetch = require("isomorphic-fetch");
 var camelCase = require("camelcase");
+var gapi = require("./gapi");
 
 var sheetsData = [];
 
@@ -17,10 +18,20 @@ var GoogleSheetConnector = React.createClass ({
 
     loadSheetsData: function(data) {
         this.setState({numSheets: data.sheets.length});
-        data.sheets.forEach(function(sheet) { return this.loadSheet(sheet.properties.title); }, this);
+        data.sheets.forEach(function(sheet) { return this.loadSheetViaKey(sheet.properties.title); }, this);
     },
 
-    loadSheet: function(sheetName) {
+    loadSheetViaAuth: function(sheet) {
+        gapi.client.sheets.spreadsheets.values.get({
+            spreadsheetId: this.props.spreadsheetId,
+            range: sheet.properties.title
+        }).then(function(response) {
+            var values = JSON.parse(response.body).values;
+            this.loadSheet(sheet.properties.title, values);
+        }.bind(this));
+    },
+
+    loadSheetViaKey: function(sheetName) {
         var url = [
             "https://sheets.googleapis.com/v4/spreadsheets/",
             this.props.spreadsheetId,
@@ -34,27 +45,31 @@ var GoogleSheetConnector = React.createClass ({
             .then(function(response) { return response.json(); })
             .then(function(json) {
                 var values = json.values;
-                var headerRow = values[0];
-                var dataRows = values.slice(1);
-                var keys = headerRow.map(function(value) {
-                    return camelCase(value);
-                }, this);
-
-                sheetsData = sheetsData.concat({
-                    name: sheetName,
-                    header: headerRow,
-                    keys: keys,
-                    data: this.loadRowsData(keys, dataRows)
-                });
-
-                this.setState(function(prevState) {
-                    var currSheet = prevState.currSheet + 1;
-                    return {
-                        currSheet: currSheet,
-                        isFetching: currSheet < prevState.numSheets
-                    };
-                });
+                this.loadSheet(sheetName, values);
             }.bind(this));
+    },
+
+    loadSheet: function(sheetName, values) {
+        var headerRow = values[0];
+        var dataRows = values.slice(1);
+        var keys = headerRow.map(function(value) {
+            return camelCase(value);
+        }, this);
+
+        sheetsData = sheetsData.concat({
+            name: sheetName,
+            header: headerRow,
+            keys: keys,
+            data: this.loadRowsData(keys, dataRows)
+        });
+
+        this.setState(function(prevState) {
+            var currSheet = prevState.currSheet + 1;
+            return {
+                currSheet: currSheet,
+                isFetching: currSheet < prevState.numSheets
+            };
+        });
     },
 
     loadRowsData: function(keys, values) {
@@ -68,21 +83,41 @@ var GoogleSheetConnector = React.createClass ({
         });
     },
 
+    initClient: function() {
+        gapi.client.init({
+            discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
+            clientId: this.props.clientId,
+            scope: "https://www.googleapis.com/auth/spreadsheets.readonly"
+        }).then(function () {
+
+            gapi.client.sheets.spreadsheets.get({
+                spreadsheetId: this.props.spreadsheetId
+            }).then(function (response) {
+                var sheets = JSON.parse(response.body).sheets;
+                this.setState({numSheets: sheets.length});
+                sheets.forEach(this.loadSheetViaAuth);
+            }.bind(this));
+        }.bind(this));
+    },
+
     shouldComponentUpdate: function(props, state) {
         return !state.isFetching;
     },
 
     componentDidMount: function() {
-        var url = [
-            "https://sheets.googleapis.com/v4/spreadsheets/",
-            this.props.spreadsheetId,
-            "?key=",
-            this.props.apiKey
-        ].join("");
+        if (this.props.clientId) {
+            return gapi.load("client:auth2", this.initClient);
+        } else if (this.props.apiKey) {
+            var url = [
+                "https://sheets.googleapis.com/v4/spreadsheets/",
+                this.props.spreadsheetId,
+                "?key=",
+                this.props.apiKey
+            ].join("");
 
-        fetch(url)
-            .then(function(response) { return response.json(); })
-            .then(function(json) { return this.loadSheetsData(json); }.bind(this));
+            fetch(url).then(function(response) { return response.json(); })
+                .then(function(json) { return this.loadSheetsData(json); }.bind(this));
+        }
     },
 
     render: function() {
@@ -100,7 +135,6 @@ var GoogleRoute = function(props) {
 };
 
 var GoogleSheet = function(props) {
-    console.log(props);
     var sheetData = new SheetData(props.sheetName);
     if (props.filter) sheetData.filter(props.filter);
     return React.createElement(props.child, {data: sheetData});
@@ -236,7 +270,7 @@ function sortArray(array, orderBy) {
     });
 }
 
-module.exports.GoogleSheetConnector = GoogleSheetConnector;
+module.exports = GoogleSheetConnector;
 module.exports.GoogleSheet = GoogleSheet;
 module.exports.GoogleRoute = GoogleRoute;
 module.exports.GoogleTable = GoogleTable;
