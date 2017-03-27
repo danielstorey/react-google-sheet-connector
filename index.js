@@ -137,7 +137,11 @@ var GoogleRoute = function(props) {
 var GoogleSheet = function(props) {
     var sheetData = new SheetData(props.sheetName);
     if (props.filter) sheetData.filter(props.filter);
-    return React.createElement(props.child, {data: sheetData.currentData});
+    var newProps = {data: sheetData.currentData};
+    for (var i in props) {
+        newProps[i] = props[i]
+    }
+    return React.createElement(props.child, newProps);
 };
 
 var GoogleTable = function(props) {
@@ -181,12 +185,17 @@ SheetData.prototype = {
     map: function(callback) {
         return this.currentData.map(callback);
     },
-    filter: function(filterObj) {
+    filter: function(filterObj, strValue) {
         this.currentData = this.data.filter(function(row) {
-            for (var i in filterObj) {
-                if (!row.hasOwnProperty(i) || row[i] !== filterObj[i]) {
-                    return false;
+            if (typeof filterObj === "object") {
+                for (var i in filterObj) {
+                    if (!row.hasOwnProperty(i) || row[i] !== filterObj[i]) {
+                        return false;
+                    }
                 }
+            } else {
+                const colIndex = this.header.indexOf(filterObj);
+                if (row[colIndex] !== strValue) return false;
             }
 
             return true;
