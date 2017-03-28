@@ -125,7 +125,7 @@ var GoogleSheetConnector = React.createClass ({
         console.info(msg);
         return this.state.isFetching ?
             this.props.spinner || React.createElement("div", null, "Loading") :
-            React.cloneElement(this.props.children, sheetsData);
+            this.props.children;
     }
 });
 
@@ -136,7 +136,11 @@ var GoogleRoute = function(props) {
 
 var GoogleSheet = function(props) {
     var sheetData = new SheetData(props.sheetName);
+
     if (props.filter) sheetData.filter(props.filter);
+    if (props.group) sheetData.group(props.group);
+    if (props.sort) sheetData.sort(props.sort);
+
     var newProps = {data: sheetData.currentData};
     for (var i in props) {
         newProps[i] = props[i]
