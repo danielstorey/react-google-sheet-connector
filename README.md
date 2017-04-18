@@ -10,7 +10,7 @@ Firstly the data must be initialized by using the `<ReactGoogleSheetConnector>` 
 ## Initialization
 Initialise the data like so:
 You may use either `apiKey` or `clientId`. Please note that for data to be accessible using just the API Key the spreadsheet sharing must be set so that anyone with the link can view.
-```jsx harmony
+```javascript
 import ReactGoogleSheetConnector from "react-google-sheet-connector"
 
 <ReactGoogleSheetConnector clientid={YOUR_CLIENT_ID}
@@ -25,7 +25,7 @@ import ReactGoogleSheetConnector from "react-google-sheet-connector"
 
 ### connectToSpreadsheet
 The following example shows how to connect a component to the Spreadsheet. The component should be passed as an argument into the `connectToSpreadsheet` function included in this module.
-```jsx harmony
+```javascript
 import { connectToSpreadsheet } from "react-google-sheet-connector"
 
 const MyComponent = (props) => {
@@ -83,7 +83,7 @@ This method returns the data after other methods e.g. `filter` and `group` have 
 
 ### Method Chaining
 Methods can be chained before finally rendering using `.map`. Here's an example:
-```jsx harmony
+```javascript
 props.getSheet("Sheet 1")
     .filter({inStock: "y"})
     .group("Product Type")
@@ -105,7 +105,7 @@ props.getSheet("Sheet 1")
 
 ### GoogleSheet
 The `<GoogleSheet>` component injects data from the given sheet into the component specified as its `child` prop. You may also specify filter, group and sort props which work as described above.
-```jsx harmony
+```javascript
 import { GoogleSheet } from "react-google-sheet-connector"
 
 <GoogleSheet child={ChildComponent} sheetName="My Sheet" filter={{key: "Value"}} group="Column Title" sort="Column to Sort">
@@ -113,7 +113,7 @@ import { GoogleSheet } from "react-google-sheet-connector"
 
 ### GoogleRoute
 This component should be used as the `component` prop in a React Router `<Route>` component. By setting additional props on the component data will be passed from the specified sheet into the `child` component. In the example below data from the "Sheet 1" sheet will be passed into the props of `<ChildComponent>`. You may also use the filter, group and sort props as described above.
-```jsx harmony
+```javascript
 import { GoogleRoute } from "react-google-sheet-connector"
 
 <Route path="/mypath" component={GoogleRoute} child={ChildComponent} sheetName="Sheet 1" />
@@ -121,7 +121,7 @@ import { GoogleRoute } from "react-google-sheet-connector"
 
 ### GoogleTable
 This component renders a sheet from your Spreadsheet into an HTML table. As well as the props in the example below you may also assign `id` and `className` attributes to the component as well as `filter` as per the GoogleSheet example.
-```jsx harmony
+```javascript
 import { GoogleTable } from "react-google-sheet-connector"
 
 <GoogleTable sheetName="Sheet 1" />
