@@ -1,16 +1,16 @@
 {
-    "name": "react-google-sheet-connector",
-    "version": "0.0.1",
-    "description": "Load data from a Google spreadsheet into your react components",
-    "author": "Dan Storey <danielstorey@gmail.com>",
-    "dependencies": {
-        "camelcase": "^4.0.0",
-        "isomorphic-fetch": "^2.2.1"
-    },
-    "license": "MIT",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/danielstorey/react-google-sheet-connector.git"
-    },
-    "homepage": "https://github.com/danielstorey/react-google-sheet-connector"
+  "name": "react-google-sheet-connector",
+  "version": "1.0.0",
+  "description": "Load data from a Google spreadsheet into your react components",
+  "author": "Dan Storey <danielstorey@gmail.com>",
+  "dependencies": {
+    "create-react-class": "^15.5.2",
+    "google-sheet-connector": "^1.0.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danielstorey/react-google-sheet-connector.git"
+  },
+  "homepage": "https://github.com/danielstorey/react-google-sheet-connector"
 }
