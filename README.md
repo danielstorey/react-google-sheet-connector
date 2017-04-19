@@ -48,38 +48,38 @@ This exposes the `getSheet` method to the component's props. `getSheet` takes on
 ## SheetData
 This is the object that is used to operate on and render data. `SheetData` contains methods to help you process and render the data. These methods are as follows:
 
-* #### filter
-This method takes a single object as an argument. The keys should be the camel-case names of the column title and the values should be the respective values of those columns. For example, to get the rows where the "Item Category" column is equal to "Sports & Leisure":
-
-`.filter({itemCategory: "Sports & Leisure"})`
-
-This method returns the `SheetsData` instance for chaining.
-
-* #### group
-This method accepts one argument which is the title of the column you wish to group the data by. When grouped the data is split into an array of objects containing `name` and `values` properties. The `name` is the value for that particular group and the `values` the corresponding rows. E.g.
-
-`.group("Item Category")`
-
-This method returns the `SheetsData` instance for chaining.
-
-* #### sort
-This method accept one argument which is the title of the column you with to sort the data by. If your data has already been grouped then each group's `values` will be sorted by the specified column. E.g.
-
-`.sort("Item Category")`
-
-This method returns the `SheetData` instance for chaining.
-
-* #### reverse
-This method reverses the data and returns the `SheetData` instance.
-
-* #### map
-Use this as you would a regular array, once you have processed and are ready to render your data. Each row contains indexed values, as a regular array and also key-value pairs where the key is the column title converted to camelCase. 
-
-* #### getData
-This method returns an array of the original data rows from the sheet where each row contains indexed values and key-value pairs
- 
-* #### getCurrentData
-This method returns the data after other methods e.g. `filter` and `group` have been applied.
+>#### filter
+>This method takes a single object as an argument. The keys should be the camel-case names of the column title and the values should be the respective values of those columns. For example, to get the rows where the "Item Category" column is equal to "Sports & Leisure":
+>
+>`.filter({itemCategory: "Sports & Leisure"})`
+>
+>This method returns the `SheetsData` instance for chaining.
+>
+>#### group
+>This method accepts one argument which is the title of the column you wish to group the data by. When grouped the data is split into an array of objects containing `name` and `values` properties. The `name` is the value for that particular group and the `values` the corresponding rows. E.g.
+>
+>`.group("Item Category")`
+>
+>This method returns the `SheetsData` instance for chaining.
+>
+>#### sort
+>This method accept one argument which is the title of the column you with to sort the data by. If your data has already been grouped then each group's `values` will be sorted by the specified column. E.g.
+>
+>`.sort("Item Category")`
+>
+>This method returns the `SheetData` instance for chaining.
+>
+>#### reverse
+>This method reverses the data and returns the `SheetData` instance.
+>
+>#### map
+>Use this as you would a regular array, once you have processed and are ready to render your data. Each row contains indexed values, as a regular array and also key-value pairs where the key is the column title converted to camelCase. 
+>
+>#### getData
+>This method returns an array of the original data rows from the sheet where each row contains indexed values and key-value pairs
+>
+>#### getCurrentData
+>This method returns the data after other methods e.g. `filter` and `group` have been applied.
 
 ### Method Chaining
 Methods can be chained before finally rendering using `.map`. Here's an example:
